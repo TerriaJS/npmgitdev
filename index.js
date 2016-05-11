@@ -45,11 +45,10 @@ forEachPackage(rootDir, function(packageName, packagePath) {
 
     var promise = Git.Repository.open(packagePath).then(function(repo) {
         var hasUncommittedChanges = false;
-        return Git.Status.foreach(repo, function() {
-            if (fs.existsSync(targetDir)) {
-                fs.rmdirSync(targetDir);
+        return Git.Status.foreach(repo, function(file, status) {
+            if (status !== Git.Status.STATUS.IGNORED) {
+                hasUncommittedChanges = true;
             }
-            hasUncommittedChanges = true;
         }).then(function(config) {
             repo.free();
 
