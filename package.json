@@ -1,6 +1,6 @@
 {
   "name": "npmgitdev",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A wrapper around npm that allows real live git repos to be cloned into node_modules.",
   "main": "index.js",
   "bin": {
@@ -21,5 +21,8 @@
   "homepage": "https://github.com/TerriaJS/npmgitdev#readme",
   "dependencies": {
     "nodegit": "^0.13.0"
+  },
+  "scripts": {
+    "postpublish": "bash -c \"git tag -a ${npm_package_version} -m \"${npm_package_version}\" && git push origin ${npm_package_version}\""
   }
 }

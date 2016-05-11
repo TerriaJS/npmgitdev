@@ -20,7 +20,7 @@ function forEachPackage(directory, callback) {
 }
 
 var rootDir = path.resolve('.');
-var tempDir = fs.mkdtempSync(path.join(rootDir, 'ginstall-'));
+var tempDir = fs.mkdtempSync(path.join(rootDir, 'npmgitdev-'));
 
 var promises = [];
 
@@ -70,6 +70,9 @@ forEachPackage(rootDir, function(packageName, packagePath) {
 });
 
 Promise.all(promises).then(function(mappings) {
+    var mappingsPath = path.join(tempDir, 'mappings.json');
+    fs.writeFileSync(mappingsPath, JSON.stringify(mappings, undefined, '  '));
+
     var uncommittedPackages = mappings.filter(function(mapping) { return mapping.hasUncommittedChanges; });
     if (uncommittedPackages.length > 0) {
         console.log('The following packages have uncommitted changes:');
@@ -172,6 +175,7 @@ Promise.all(promises).then(function(mappings) {
     }
 
     if (!errors) {
+        fs.unlinkSync(mappingsPath);
         fs.rmdirSync(tempDir);
     }
 }).catch(function(e) {
