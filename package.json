@@ -1,0 +1,25 @@
+{
+  "name": "npmgitdev",
+  "version": "1.0.0",
+  "description": "A wrapper around npm that allows real live git repos to be cloned into node_modules.",
+  "main": "index.js",
+  "bin": {
+    "npmgitdev": "./index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TerriaJS/npmgitdev.git"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/TerriaJS/npmgitdev/issues"
+  },
+  "homepage": "https://github.com/TerriaJS/npmgitdev#readme",
+  "dependencies": {
+    "nodegit": "^0.13.0"
+  }
+}
