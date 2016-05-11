@@ -27,7 +27,11 @@ Usage:
 cd node_modules
 git clone https://github.com/TerriaJS/terriajs # or whatever repo you want to work with inside your project
 cd ..
+
+# later, or whenever you want:
 npmgitdev install
 ```
+
+The end result is that npm installs packages exactly as it would if you copied all your `devDependencies` to `dependencies` and then published the package to npm.  npm's package deduplication actually works, unlike with `npm link`!
 
 If you accidentally run `npm install` instead, it should be harmless because `npm` will bail when it sees your `.git` directory.
