@@ -4,7 +4,7 @@ npmgitdev a wrapper around `npm` version 3+ that allows you to work with git rep
 
 When we're developing modular software, we often need to edit multiple separate npm packages simultaneously.  The "official" way to do this is with `npm link`.  We clone a separate repo for each package, and then link it into the appropriate places.  The problem is, `npm link` creates all sorts of complexities and bugs.
 
-It would be nice if we could avoid all this complexity by simply cloning a repo into `node_modules`.  Unfortunately, `npm install` will bail (refuse to do anything) when it detects a `.git` directory inside any package in node_modules.  This is a problem because it forces us to use `npm link` to develop modular software, which comes with a whole host of complexities and bugs.
+It would be nice if we could avoid all this complexity by simply cloning a repo into `node_modules`.  Unfortunately, `npm install` will bail (refuse to do anything) when it detects a `.git` directory inside any package in node_modules.
 
 `npmgitdev` avoids this problem by:
 
