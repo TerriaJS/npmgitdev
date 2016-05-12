@@ -35,3 +35,11 @@ npmgitdev install
 The end result is that npm installs packages exactly as it would if you copied all your `devDependencies` to `dependencies` and then published the package to npm.  npm's package deduplication actually works, unlike with `npm link`!
 
 If you accidentally run `npm install` instead, it should be harmless because `npm` will bail when it sees your `.git` directory.
+
+## Questions and Answers
+
+> What happens if my git package is referenced from multiple other packages in my dependency tree?
+
+Generally, you should clone your git package into the top-level `node_modules` directory of your application.  Then, `npmgitdev` will ensure that npm keeps it there by adding a dependency in the top-level `package.json` to that exact version of the package.  If other packages elsewhere in the dependency tree depend on a semver-compatible version of that package, npm 3's deduplication wil avoid installing any other copies of that package elsewhere in the tree.
+
+However, if other packages depend on an _incompatible_ version of that package, or if their dependency is to a Git URL or something else other than a version, npm _will_ install additional copies.  If you instead intended for all packages to share the Git repo version of the package, you simply need to delete the extra copies that npm installed.  Use `npmgitdev list <package name>` to see what versions exist in your dependency tree.
