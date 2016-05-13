@@ -45,9 +45,12 @@ forEachPackage(rootDir, function(packageName, packagePath) {
 
     var promise = Git.Repository.open(packagePath).then(function(repo) {
         var hasUncommittedChanges = false;
+        var messages = [];
         return Git.Status.foreach(repo, function(file, status) {
             if (status !== Git.Status.STATUS.IGNORED) {
                 hasUncommittedChanges = true;
+                var statusTexts = Object.keys(Git.Status.STATUS).filter(function(key) {return Git.Status.STATUS[key] & status;});
+                messages.push('    * ' + file + ': ' + statusTexts.join(', '));
             }
         }).then(function(config) {
             repo.free();
@@ -56,6 +59,7 @@ forEachPackage(rootDir, function(packageName, packagePath) {
 
             return {
                 hasUncommittedChanges: hasUncommittedChanges,
+                messages: messages,
                 packageName: packageName,
                 packagePath: packagePath,
                 original: gitDir,
@@ -78,6 +82,7 @@ Promise.all(promises).then(function(mappings) {
         console.log('The following packages have uncommitted changes:');
         uncommittedPackages.forEach(function(mapping) {
             console.log('  ' + mapping.packagePath);
+            console.log(mapping.messages.join('\n'));
         });
         console.log('Please ensure all packages with a git repository have a clean working directory.')
     }
