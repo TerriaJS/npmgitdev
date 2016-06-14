@@ -24,6 +24,12 @@ var tempDir = fs.mkdtempSync(path.join(rootDir, 'npmgitdev-'));
 
 var promises = [];
 
+if (process.argv.length === 2) {
+    console.log('npmgitdev is a wrapper around npm, so it uses exactly the same arguments. See the README. Try `npmgitdev install`');
+    process.exit(1);
+}
+
+
 forEachPackage(rootDir, function(packageName, packagePath) {
     var gitDir = path.join(packagePath, '.git');
     if (!fs.existsSync(gitDir)) {
@@ -134,12 +140,13 @@ Promise.all(promises).then(function(mappings) {
 
     if (i === mappings.length) {
         try {
-            console.log('Starting npm');
-            var result = spawnSync('npm', process.argv.slice(2), {
+            var passargs = process.argv.slice(2);
+            console.log('(running `npm ' + passargs.join(' ') + '`)');
+            var result = spawnSync('npm', passargs, {
                 stdio: 'inherit',
                 shell: true
             });
-            console.log('Done npm');
+            console.log('(npm finished)');
         } catch (e) {
             console.log(e);
         }
