@@ -29,6 +29,10 @@ if (process.argv.length === 2) {
     process.exit(1);
 }
 
+if (path.parse(path.resolve('..')).name === 'node_modules') {
+    output ('** Warning: You are in a directory inside a node_modules directory. Most npmgitdev commands should be run in the enclosing project directory (cd ../..).');
+}
+
 function output(s) {
     console.log('[npmgitdev] ' + s);
 }
