@@ -29,6 +29,10 @@ if (process.argv.length === 2) {
     process.exit(1);
 }
 
+function output(s) {
+    console.log('[npmgitdev] ' + s);
+}
+
 
 forEachPackage(rootDir, function(packageName, packagePath) {
     var gitDir = path.join(packagePath, '.git');
@@ -38,7 +42,7 @@ forEachPackage(rootDir, function(packageName, packagePath) {
 
     var stat = fs.lstatSync(packagePath);
     if (stat.isSymbolicLink()) {
-        console.log('Skipping symlinked package: ' + packagePath);
+        output('Skipping symlinked package: ' + packagePath);
         return;
     }
 
@@ -85,12 +89,12 @@ Promise.all(promises).then(function(mappings) {
 
     var uncommittedPackages = mappings.filter(function(mapping) { return mapping.hasUncommittedChanges; });
     if (uncommittedPackages.length > 0) {
-        console.log('The following packages have uncommitted changes:');
+        output('The following packages have uncommitted changes:');
         uncommittedPackages.forEach(function(mapping) {
-            console.log('  ' + mapping.packagePath);
-            console.log(mapping.messages.join('\n'));
+            output('  ' + mapping.packagePath);
+            output(mapping.messages.join('\n'));
         });
-        console.log('Please ensure all packages with a git repository have a clean working directory.')
+        output('Please ensure all packages with a git repository have a clean working directory.')
     }
 
     var i = 0;
@@ -116,7 +120,7 @@ Promise.all(promises).then(function(mappings) {
         try {
             for (i = 0; i < mappings.length; ++i) {
                 mapping = mappings[i];
-                console.log('Moving ' + mapping.original + ' to ' + mapping.renamed);
+                output('Moving ' + mapping.original + ' to ' + mapping.renamed);
                 fs.renameSync(mapping.original, mapping.renamed);
 
                 var packageJsonPath = path.join(mapping.packagePath, 'package.json');
@@ -124,7 +128,7 @@ Promise.all(promises).then(function(mappings) {
                     var originalPackageJsonText = fs.readFileSync(packageJsonPath, 'utf8');
                     var originalPackageJson = JSON.parse(originalPackageJsonText);
                     if (originalPackageJson.devDependencies) {
-                        console.log('Temporarily adding devDependencies to dependencies in ' + packageJsonPath);
+                        output('Temporarily adding devDependencies to dependencies in ' + packageJsonPath);
                         mapping.originalPackageJsonText = originalPackageJsonText;
                         mapping.packageJsonPath = packageJsonPath;
                         var newPackageJson = Object.assign({}, originalPackageJson);
@@ -134,21 +138,21 @@ Promise.all(promises).then(function(mappings) {
                 }
             }
         } catch(e) {
-            console.log(e);
+            output(e);
         }
     }
 
     if (i === mappings.length) {
         try {
             var passargs = process.argv.slice(2);
-            console.log('(running `npm ' + passargs.join(' ') + '`)');
+            output('Running `npm ' + passargs.join(' ') + '`)');
             var result = spawnSync('npm', passargs, {
                 stdio: 'inherit',
                 shell: true
             });
-            console.log('(npm finished)');
+            output('npm finished');
         } catch (e) {
-            console.log(e);
+            output(e);
         }
     }
 
@@ -162,14 +166,14 @@ Promise.all(promises).then(function(mappings) {
     for (j = 0; j < i; ++j) {
         mapping = mappings[j];
         if (mapping.originalPackageJsonText) {
-            console.log('Restoring original ' + mapping.packageJsonPath);
+            output('Restoring original ' + mapping.packageJsonPath);
             fs.writeFileSync(mapping.packageJsonPath, mapping.originalPackageJsonText);
         }
-        console.log('Returning ' + mapping.renamed + ' to ' + mapping.original);
+        output('Returning ' + mapping.renamed + ' to ' + mapping.original);
         try {
             fs.renameSync(mapping.renamed, mapping.original);
         } catch(e) {
-            console.log('** Error while renaming ' + mapping.renamed + ' back to ' + mapping.original);
+            output('** Error while renaming ' + mapping.renamed + ' back to ' + mapping.original);
             errors = true;
         }
     }
@@ -180,7 +184,7 @@ Promise.all(promises).then(function(mappings) {
             try {
                 fs.rmdirSync(mapping.renamed);
             } catch(e) {
-                console.log('** Error while removing ' + mapping.renamed);
+                output('** Error while removing ' + mapping.renamed);
                 errors = true;
             }
         }
@@ -191,8 +195,8 @@ Promise.all(promises).then(function(mappings) {
         fs.rmdirSync(tempDir);
     }
 }).catch(function(e) {
-    console.log(e);
-    console.log(e.stack);
+    output(e);
+    output(e.stack);
 });
 
 function readPackageJsonText(packagePath) {
