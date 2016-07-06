@@ -7,7 +7,7 @@
     "npmgitdev": "./index.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "postpublish": "bash -c \"git tag -a ${npm_package_version} -m \"${npm_package_version}\" && git push origin ${npm_package_version}\""
   },
   "repository": {
     "type": "git",
@@ -20,10 +20,7 @@
   },
   "homepage": "https://github.com/TerriaJS/npmgitdev#readme",
   "dependencies": {
-    "nodegit": "^0.13.0"
-  },
-  "scripts": {
-    "postpublish": "bash -c \"git tag -a ${npm_package_version} -m \"${npm_package_version}\" && git push origin ${npm_package_version}\""
+    "nodegit": "^0.14.1"
   },
   "engineStrict": true,
   "engines": {
