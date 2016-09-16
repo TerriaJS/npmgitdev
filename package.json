@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/TerriaJS/npmgitdev#readme",
   "dependencies": {
-    "nodegit": "^0.14.1"
+    "nodegit": "^0.16.0"
   },
   "engineStrict": true,
   "engines": {
