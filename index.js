@@ -67,8 +67,6 @@ forEachPackage(rootDir, function(packageName, packagePath) {
                 messages.push('    * ' + file + ': ' + statusTexts.join(', '));
             }
         }).then(function(config) {
-            repo.free();
-
             var packageJson = readPackageJson(packagePath);
 
             return {
